@@ -71,10 +71,10 @@ python Ultra-Fast-Duplicate-Finder.py
 ┌──────────────────────────────────────────────────┐
 │  Step 1: Folder scan (os.walk)                   │
 │  ↓                                               │
-│  Step 2: Size के हिसाब से group                    │
+│  Step 2: Size के हिसाब से group                  │
 │          (unique size = skip, fast)              │
 │  ↓                                               │
-│  Step 3: सिर्फ़ same-size files का hash             │
+│  Step 3: सिर्फ़ same-size files का hash           │
 │          (MD5, 64KB chunks)                      │
 │  ↓                                               │
 │  Step 4: Same hash = duplicate group             │
