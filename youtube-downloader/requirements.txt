@@ -1,0 +1,21 @@
+# ============================================
+# YouTube Downloader — Dependencies
+# ============================================
+# Install: pip install -r requirements.txt
+
+Flask>=3.0.0
+yt-dlp>=2024.12.13
+
+# --------------------------------------------
+# External tools (PATH में होने चाहिए)
+# --------------------------------------------
+# FFmpeg  — video+audio merging, audio conversion (अनिवार्य)
+#   Windows : https://www.gyan.dev/ffmpeg/builds/
+#   Linux   : sudo apt install ffmpeg
+#   macOS   : brew install ffmpeg
+#
+# aria2c  — optional, तेज़ download के लिए
+#   Windows : https://github.com/aria2/aria2/releases
+#   Linux   : sudo apt install aria2
+#   macOS   : brew install aria2
+# --------------------------------------------

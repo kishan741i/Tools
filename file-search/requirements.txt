@@ -1,0 +1,12 @@
+# ============================================
+# File Search — Dependencies
+# ============================================
+# Install: pip install -r requirements.txt
+
+# ✅ कोई external dependency नहीं चाहिए!
+# Tkinter Python के साथ आता है।
+#
+# Linux users: अगर Tkinter missing हो तो:
+#   sudo apt install python3-tk
+
+# (खाली file — सिर्फ़ documentation के लिए)

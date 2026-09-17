@@ -1,0 +1,10 @@
+# ============================================
+# Ultra-Fast Bulk File Renamer — Dependencies
+# ============================================
+# Install: pip install -r requirements.txt
+
+# ✅ कोई external dependency नहीं चाहिए!
+# यह script सिर्फ़ Python standard library use करती है:
+#   os, re, time, sys, datetime
+#
+# (खाली file — सिर्फ़ documentation के लिए)

@@ -1,0 +1,12 @@
+# ============================================
+# Ultra-Fast Duplicate Finder — Dependencies
+# ============================================
+# Install: pip install -r requirements.txt
+
+# ✅ कोई external dependency नहीं चाहिए!
+# यह script सिर्फ़ Python standard library use करती है:
+#   os, hashlib, time, sys, collections
+#
+# Tkinter भी नहीं चाहिए — CLI tool है।
+#
+# (खाली file — सिर्फ़ documentation के लिए)

@@ -1,0 +1,12 @@
+# ============================================
+# Auto Brightness — Dependencies
+# ============================================
+# Install: pip install -r requirements.txt
+
+opencv-python>=4.8.0
+numpy>=1.24.0
+screen-brightness-control>=0.23.0
+
+# Optional (system tray के लिए)
+# pystray>=0.19.5
+# Pillow>=10.0.0

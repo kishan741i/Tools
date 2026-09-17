@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Downloader</title>
+<meta name="description" content="Local, private downloader for YouTube videos, playlists, and channels.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23F0A93E'/%3E%3Cpath d='M9 6.5v11l9-5.5-9-5.5z' fill='%230B0C0F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M8 5.5v13l11-6.5-11-6.5z" fill="currentColor"/></svg>
+      </span>
+      <div class="brand-text">
+        <h1>YouTube Video / Playlist / Channel Downloader</h1>
+        <p class="subtitle">Local, private, fast &mdash; powered by yt-dlp &amp; FFmpeg</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button id="soundToggle" class="icon-btn" title="Toggle completion sound" aria-label="Toggle completion sound">🔔</button>
+      <button id="themeToggle" class="icon-btn" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">☀️</button>
+    </div>
+  </header>
+
+  <div id="depsWarning" class="banner banner-warn hidden"></div>
+
+  <div class="flow">
+
+    <div class="step">
+      <div class="step-marker" aria-hidden="true"><span class="step-num">1</span></div>
+      <section class="card fetch-card">
+        <h2 class="step-title">Add a link</h2>
+        <div class="fetch-row">
+          <input id="urlInput" type="text" placeholder="Paste YouTube video, playlist, or channel URL" autocomplete="off">
+          <button id="fetchBtn" class="btn btn-primary">Fetch</button>
+        </div>
+        <div id="fetchLoading" class="loading-row hidden">
+          <span class="spinner"></span> Fetching information...
+        </div>
+        <div id="errorBox" class="error-box hidden"></div>
+      </section>
+    </div>
+
+    <div class="step">
+      <div class="step-marker" aria-hidden="true"><span class="step-num">2</span></div>
+      <section id="infoSection" class="card hidden">
+        <h2 class="step-title">Review &amp; configure</h2>
+
+        <!-- Single video info -->
+        <div id="videoInfo" class="media-info hidden">
+          <img id="videoThumb" class="thumb" alt="thumbnail">
+          <div class="media-details">
+            <h3 id="videoTitle"></h3>
+            <p id="videoUploader" class="muted"></p>
+            <p><span class="tag">Duration:</span> <span id="videoDuration" class="mono"></span></p>
+            <p><span class="tag">Available qualities:</span> <span id="videoQualities" class="mono"></span></p>
+            <p id="videoEstRow" class="hidden"><span class="tag">Estimated size:</span> <span id="videoEstSize" class="mono"></span></p>
+          </div>
+        </div>
+
+        <!-- Playlist / channel info -->
+        <div id="playlistInfo" class="media-info hidden">
+          <img id="playlistThumb" class="thumb" alt="playlist thumbnail">
+          <div class="media-details">
+            <h3 id="playlistTitle"></h3>
+            <p id="playlistUploader" class="muted"></p>
+            <p><span class="tag">Videos:</span> <span id="playlistCount" class="mono"></span> <span id="playlistChannelTag" class="tag hidden">&middot; Channel uploads</span></p>
+            <p id="playlistEstRow" class="hidden"><span class="tag">Estimated size:</span> <span id="playlistEstSize" class="mono"></span></p>
+          </div>
+        </div>
+
+        <div id="playlistToolsRow" class="playlist-tools hidden">
+          <input id="playlistSearch" type="text" placeholder="Search videos by title...">
+          <button id="exportCsvBtn" class="btn btn-secondary">Export CSV</button>
+          <button id="exportTxtBtn" class="btn btn-secondary">Export TXT</button>
+        </div>
+        <div id="playlistListHead" class="pl-list-head hidden">
+          <span class="pl-list-head-check"></span>
+          <span class="pl-list-head-index">#</span>
+          <span class="pl-list-head-title">Title</span>
+          <span class="pl-list-head-duration">Length</span>
+        </div>
+        <div id="playlistVideoList" class="playlist-scroll hidden"></div>
+
+        <!-- Options -->
+        <div class="options-panel">
+          <div class="option-row">
+            <label for="qualitySelect">Quality</label>
+            <select id="qualitySelect">
+              <option value="best">Best Quality</option>
+              <option value="2160">2160p / 4K</option>
+              <option value="1440">1440p</option>
+              <option value="1080">1080p</option>
+              <option value="720">720p</option>
+              <option value="480">480p</option>
+              <option value="360">360p</option>
+              <option value="audio">Audio Only</option>
+            </select>
+          </div>
+
+          <div class="option-row hidden" id="audioFormatRow">
+            <label for="audioFormatSelect">Audio format</label>
+            <select id="audioFormatSelect">
+              <option value="mp3">MP3</option>
+              <option value="m4a">M4A</option>
+              <option value="wav">WAV</option>
+              <option value="opus">OPUS</option>
+            </select>
+          </div>
+
+          <div class="option-row hidden" id="orderRow">
+            <label for="orderSelect">Download order</label>
+            <select id="orderSelect">
+              <option value="default">Playlist order</option>
+              <option value="reverse">Reverse order</option>
+            </select>
+          </div>
+
+          <div class="option-row hidden" id="modeRow">
+            <label for="modeSelect">Download</label>
+            <select id="modeSelect">
+              <option value="whole">Whole playlist</option>
+              <option value="range">Specific range</option>
+              <option value="select">Hand-pick videos</option>
+            </select>
+          </div>
+
+          <div class="option-row range-row hidden" id="rangeInputsRow">
+            <label>Starting index <input type="number" id="startIndex" min="1" value="1"></label>
+            <label>Ending index <input type="number" id="endIndex" min="1" value="1"></label>
+          </div>
+
+          <div class="option-row select-controls-row hidden" id="selectControlsRow">
+            <button id="selectAllBtn" class="btn btn-secondary">Select All</button>
+            <button id="selectNoneBtn" class="btn btn-secondary">Select None</button>
+            <span id="selectedCount" class="muted mono">0 selected</span>
+          </div>
+
+          <div class="option-row folder-row">
+            <label for="downloadDirInput">Save to folder (optional)</label>
+            <input type="text" id="downloadDirInput" placeholder="Leave blank for default ./downloads — paste a full absolute path">
+          </div>
+          <p class="hint-text">Browsers can't open a native folder-choose dialog for files a server saves — paste the full path instead (e.g. <code>D:\Videos</code> or <code>/home/you/Videos</code>).</p>
+
+          <button id="downloadBtn" class="btn btn-primary btn-block">Download</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="step">
+      <div class="step-marker" aria-hidden="true"><span class="step-num">3</span></div>
+      <section id="progressSection" class="card hidden">
+        <div class="progress-header">
+          <h2><span class="rec-dot" aria-hidden="true"></span><span id="progressTitle">Downloading</span></h2>
+          <div class="progress-header-btns">
+            <button id="pauseBtn" class="btn btn-danger hidden">Pause</button>
+            <button id="resumeBtn" class="btn btn-primary hidden">Resume</button>
+            <button id="cancelBtn" class="btn btn-danger">Cancel Download</button>
+          </div>
+        </div>
+        <p id="overallStatus" class="muted mono"></p>
+
+        <!-- Single video progress -->
+        <div id="singleProgress" class="progress-card hidden">
+          <p id="singleFilename" class="filename"></p>
+          <p id="singleStage" class="stage-label"></p>
+          <div class="progress-bar-outer"><div id="singleBar" class="progress-bar-inner"></div></div>
+          <div class="progress-stats mono">
+            <span id="singlePercent">0%</span>
+            <span id="singleSize">-- / --</span>
+            <span id="singleSpeed">--</span>
+            <span id="singleEta">--:--:--</span>
+          </div>
+        </div>
+
+        <!-- Playlist progress -->
+        <div id="playlistProgress" class="progress-list hidden"></div>
+      </section>
+    </div>
+
+  </div>
+
+</div>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
